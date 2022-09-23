@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 
 import { PrismaClient } from "@prisma/client";
@@ -11,8 +11,14 @@ const prisma = new PrismaClient({
 app.use(express.json());
 app.use(cors());
 
-app.get("/employees", async (req, res) => {
-  const getEmployees = await prisma.employee.findMany({
+app.get("/employees/:id", async (req, res) => {
+  const employee = req.params.id;
+  const getEmployees: any = await prisma.employee.findMany({
+    where: {
+      email: {
+        not: `${employee}`,
+      },
+    },
     include: {
       ratings: true,
     },
@@ -21,56 +27,53 @@ app.get("/employees", async (req, res) => {
   return res.status(200).json(getEmployees);
 });
 
-app.get("/employees/ratings", async (req, res) => {
-  const getEmployees = await prisma.rating.findMany({
-    where: {
-      whoVoted: "joao.matos@construtorapatriani.com.br",
-      employeeEmail: "carlos.alexandre@construtorapatriani.com.br",
-    },
-  });
-
-  return res.status(200).json(getEmployees);
-});
-
 app.post("/employee/:id/rating", async (req, res) => {
   const employeeId = req.params.id;
-  const body: any = req.body;
 
-  const checkVotes = await prisma.employee
-    .findUnique({
-      where: {
-        email: employeeId,
-      },
-      include: {
-        ratings: {
-          where: {
-            whoVoted: body.whoVoted,
+  const wasVote = await prisma.employee.findUnique({
+    where: {
+      email: `${employeeId}`,
+    },
+    select: {
+      ratings: {
+        where: {
+          whoVoted: {
+            contains: `${req.body.whoVoted}`,
           },
         },
       },
-    })
-    .then((response) => {
-      response?.ratings;
-    });
-
-  if (body.whoVoted == checkVotes) {
-    /* const rating: any = await prisma.rating.create({
-    data: {
-      employeeEmail: employeeId,
-      whoVoted: body.whoVoted,
-      sensoTime: body.sensoTime,
-      atitudeEmpreendedora: body.atitudeEmpreendedora,
-      autonomiaResponsabilidade: body.autonomiaResponsabilidade,
-      sensoDono: body.sensoDono,
-      focoResultado: body.focoResultado,
-      focoCliente: body.focoCliente,
-      visaoSistemica: body.visaoSistemica,
-      inovacao: body.inovacao,
-      liderancaInspiradora: body.liderancaInspiradora,
-      votedAt: body.votedAt,
     },
-  }); */
-    return res.json(body.whoVoted);
+  });
+
+  console.log(wasVote);
+
+  try {
+    if (wasVote == undefined) {
+      const rating: any = await prisma.rating.create({
+        data: {
+          employeeEmail: employeeId,
+          whoVoted: req.body.whoVoted,
+          sensoTime: req.body.sensoTime,
+          atitudeEmpreendedora: req.body.atitudeEmpreendedora,
+          autonomiaResponsabilidade: req.body.autonomiaResponsabilidade,
+          sensoDono: req.body.sensoDono,
+          focoResultado: req.body.focoResultado,
+          focoCliente: req.body.focoCliente,
+          visaoSistemica: req.body.visaoSistemica,
+          inovacao: req.body.inovacao,
+          liderancaInspiradora: req.body.liderancaInspiradora,
+          votedAt: req.body.votedAt,
+        },
+      });
+
+      return res.status(200).json(rating);
+    }
+    return res
+      .status(400)
+      .send({ error: "Ops parece que vc ja votou nesse colaborador " });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send({ error: "Vote failed" });
   }
 });
 

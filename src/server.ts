@@ -1,5 +1,5 @@
-import express, { response } from "express";
 import cors from "cors";
+import express from "express";
 
 import { PrismaClient } from "@prisma/client";
 
@@ -29,54 +29,43 @@ app.get("/employees/:id", async (req, res) => {
 
 app.post("/employee/:id/rating", async (req, res) => {
   const employeeId = req.params.id;
+  const body = req.body;
 
-  const wasVote = await prisma.employee.findUnique({
+  const voteAlreadyExists = await prisma.rating.findMany({
     where: {
-      email: `${employeeId}`,
-    },
-    select: {
-      ratings: {
-        where: {
-          whoVoted: {
-            contains: `${req.body.whoVoted}`,
-          },
-        },
+      employeeEmail: {
+        equals: `${employeeId}`,
       },
+      whoVoted: `${body.whoVoted}`,
     },
   });
 
-  console.log(wasVote);
+  if (voteAlreadyExists.length == 0) {
+    const rating = await prisma.rating.create({
+      data: {
+        employeeEmail: employeeId,
+        whoVoted: body.whoVoted,
+        sensoTime: body.sensoTime,
+        atitudeEmpreendedora: body.atitudeEmpreendedora,
+        autonomiaResponsabilidade: body.autonomiaResponsabilidade,
+        sensoDono: body.sensoDono,
+        focoResultado: body.focoResultado,
+        focoCliente: body.focoCliente,
+        visaoSistemica: body.visaoSistemica,
+        inovacao: body.inovacao,
+        liderancaInspiradora: body.liderancaInspiradora,
+        votedAt: body.votedAt,
+      },
+    });
 
-  try {
-    if (wasVote == undefined) {
-      const rating: any = await prisma.rating.create({
-        data: {
-          employeeEmail: employeeId,
-          whoVoted: req.body.whoVoted,
-          sensoTime: req.body.sensoTime,
-          atitudeEmpreendedora: req.body.atitudeEmpreendedora,
-          autonomiaResponsabilidade: req.body.autonomiaResponsabilidade,
-          sensoDono: req.body.sensoDono,
-          focoResultado: req.body.focoResultado,
-          focoCliente: req.body.focoCliente,
-          visaoSistemica: req.body.visaoSistemica,
-          inovacao: req.body.inovacao,
-          liderancaInspiradora: req.body.liderancaInspiradora,
-          votedAt: req.body.votedAt,
-        },
-      });
-
-      return res.status(200).json(rating);
-    }
-    return res
-      .status(400)
-      .send({ error: "Ops parece que vc ja votou nesse colaborador " });
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send({ error: "Vote failed" });
+    return res.status(200).json(rating);
   }
+
+  return res.send({ Error: "Ops parece que vc ja votou nesse funcionário" });
 });
 
-app.listen(3333, () => {
-  console.log("Server is running");
+const port = 3333;
+
+app.listen(port, () => {
+  console.log(`Server is running in port ${port}`);
 });

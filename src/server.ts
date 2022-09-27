@@ -61,7 +61,9 @@ app.post("/employee/:id/rating", async (req, res) => {
     return res.status(200).json(rating);
   }
 
-  return res.send({ Error: "Ops parece que vc ja votou nesse funcionário" });
+  return res
+    .status(400)
+    .send({ Error: "Ops parece que vc ja votou nesse funcionário" });
 });
 
 const port = 3333;

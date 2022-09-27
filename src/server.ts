@@ -68,6 +68,6 @@ app.post("/employee/:id/rating", async (req, res) => {
 
 const port = 3333;
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
   console.log(`Server is running in port ${port}`);
 });

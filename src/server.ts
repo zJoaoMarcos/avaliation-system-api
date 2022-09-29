@@ -1,4 +1,5 @@
 import cors from "cors";
+import bodyParser from "body-parser";
 import express from "express";
 
 import { PrismaClient } from "@prisma/client";
@@ -9,7 +10,10 @@ const prisma = new PrismaClient({
 });
 
 app.use(express.json());
+
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get("/employees/:id", async (req, res) => {
   const employee = req.params.id;

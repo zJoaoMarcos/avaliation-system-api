@@ -87,8 +87,8 @@ app.post("/employee/:id/rating", async (req, res) => {
     .send({ Error: "Ops parece que vc ja votou nesse funcionário" });
 });
 
-const port = 3333;
+const PORT = process.env.PORT || 3333;
 
-app.listen(process.env.PORT || port, () => {
-  console.log(`Server is running in port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running in port ${PORT}`);
 });

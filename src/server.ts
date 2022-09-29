@@ -14,7 +14,7 @@ app.use(cors());
 app.get("/employees/:id", async (req, res) => {
   const employee = req.params.id;
 
-  const verifyEmployeeExists: any = await prisma.employee.findMany({
+  const employeeAlreadyExists: any = await prisma.employee.findMany({
     where: {
       email: {
         equals: `${employee}`,
@@ -22,8 +22,8 @@ app.get("/employees/:id", async (req, res) => {
     },
   });
 
-  if (verifyEmployeeExists.length == 0) {
-    return res.status(400).send({ Error: "User does not exists" });
+  if (employeeAlreadyExists.length == 0) {
+    return res.status(400).send({ Error: "Employee does not exists" });
   }
 
   const getEmployees: any = await prisma.employee.findMany({
@@ -33,7 +33,11 @@ app.get("/employees/:id", async (req, res) => {
       },
     },
     include: {
-      ratings: true,
+      ratings: {
+        select: {
+          whoVoted: true,
+        },
+      },
     },
   });
 

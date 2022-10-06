@@ -1,8 +1,11 @@
+import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import express from "express";
 
 import { PrismaClient } from "@prisma/client";
+
+dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient({
@@ -66,15 +69,15 @@ app.post("/employee/:id/rating", async (req, res) => {
       data: {
         employeeEmail: employeeId,
         whoVoted: body.whoVoted,
-        sensoTime: body.sensoTime,
-        atitudeEmpreendedora: body.atitudeEmpreendedora,
-        autonomiaResponsabilidade: body.autonomiaResponsabilidade,
-        sensoDono: body.sensoDono,
-        focoResultado: body.focoResultado,
-        focoCliente: body.focoCliente,
-        visaoSistemica: body.visaoSistemica,
-        inovacao: body.inovacao,
-        liderancaInspiradora: body.liderancaInspiradora,
+        note1: body.note1,
+        note2: body.note2,
+        note3: body.note3,
+        note4: body.note4,
+        note5: body.note5,
+        note6: body.note6,
+        note7: body.note7,
+        note8: body.note8,
+        note9: body.note9,
         votedAt: body.votedAt,
       },
     });

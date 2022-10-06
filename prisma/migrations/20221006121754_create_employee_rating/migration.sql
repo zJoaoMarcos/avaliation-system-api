@@ -2,7 +2,6 @@
 CREATE TABLE "employee" (
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "department" TEXT NOT NULL,
 
     CONSTRAINT "employee_pkey" PRIMARY KEY ("email")
@@ -13,15 +12,15 @@ CREATE TABLE "rating" (
     "id" TEXT NOT NULL,
     "employeeEmail" TEXT NOT NULL,
     "whoVoted" TEXT NOT NULL,
-    "sensoTime" INTEGER NOT NULL,
-    "atitudeEmpreendedora" INTEGER NOT NULL,
-    "autonomiaResponsabilidade" INTEGER NOT NULL,
-    "sensoDono" INTEGER NOT NULL,
-    "focoResultado" INTEGER NOT NULL,
-    "focoCliente" INTEGER NOT NULL,
-    "visaoSistemica" INTEGER NOT NULL,
-    "inovacao" INTEGER NOT NULL,
-    "liderancaInspiradora" INTEGER NOT NULL,
+    "note_1" INTEGER,
+    "note_2" INTEGER,
+    "note_3" INTEGER,
+    "note_4" INTEGER,
+    "note_5" INTEGER,
+    "note_6" INTEGER,
+    "note_7" INTEGER,
+    "note_8" INTEGER,
+    "note_9" INTEGER,
     "votedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "rating_pkey" PRIMARY KEY ("id")

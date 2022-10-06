@@ -14,7 +14,6 @@ datasource db {
 model Employee {
   email      String   @id
   name       String
-  password   String
   department String
   ratings    Rating[]
 
@@ -22,19 +21,19 @@ model Employee {
 }
 
 model Rating {
-  id                        String   @id @default(uuid())
-  employeeEmail             String
-  whoVoted                  String
-  sensoTime                 Int
-  atitudeEmpreendedora      Int
-  autonomiaResponsabilidade Int
-  sensoDono                 Int
-  focoResultado             Int
-  focoCliente               Int
-  visaoSistemica            Int
-  inovacao                  Int
-  liderancaInspiradora      Int
-  votedAt                   DateTime @default(now())
+  id            String   @id @default(uuid())
+  employeeEmail String
+  whoVoted      String
+  note1         Int
+  note2         Int
+  note3         Int
+  note4         Int
+  note5         Int
+  note6         Int
+  note7         Int
+  note8         Int
+  note9         Int
+  votedAt       DateTime @default(now())
 
   employee Employee @relation(fields: [employeeEmail], references: [email])
 

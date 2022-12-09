@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
-import cors from "cors";
 import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 
 import { PrismaClient } from "@prisma/client";
@@ -43,6 +43,16 @@ app.get("/employees/:id", async (req, res) => {
       ratings: {
         select: {
           whoVoted: true,
+          id: true,
+          note1: true,
+          note2: true,
+          note3: true,
+          note4: true,
+          note5: true,
+          note6: true,
+          note7: true,
+          note8: true,
+          note9: true,
         },
       },
     },
